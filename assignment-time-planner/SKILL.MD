@@ -9,6 +9,8 @@ Help the student see how much time their upcoming Canvas assignments will realis
 
 The goal is a task list the student can trust. Create each task once, keep it matched to Canvas, and never shrink an estimate the student may be relying on.
 
+This Skill owns the Canvas side of the workflow. Canvas assignment details are inputs used here to estimate workload; they are not scheduling inputs for downstream Skills. The managed Google Task is the handoff to downstream planning: it communicates what the assignment is, when it is due, and how much time it is estimated to require.
+
 ## Core concepts
 
 Use these definitions consistently.
@@ -21,6 +23,9 @@ Cubbie's estimate, in hours, of how long an assignment will take. Round to the n
 
 Managed task:
 A Google Task created by this Skill. It has a title starting with "[Canvas]" and notes that contain the Canvas assignment ID.
+
+Handoff boundary:
+Canvas-specific details such as points, grade weight, rubric contents, assignment instructions, submission type, and linked course material may be used inside this Skill to produce a time estimate. Do not preserve those details as downstream scheduling features. A downstream scheduling Skill should rely on the managed task's assignment identity, due date or due time, and estimated time rather than rereading or reasoning from Canvas.
 
 ## First-time setup
 
@@ -103,6 +108,12 @@ Notes, one item per line:
 - Estimated time in hours
 - A one-line reason for the estimate
 
+The Canvas link and Canvas ID exist so this Skill can keep the Google Task matched to the correct Canvas assignment and avoid duplicates. They are not inputs for downstream scheduling.
+
+Do not copy points, grade weight, rubric contents, full assignment instructions, submission type, or linked course material into the managed task for use by downstream Skills. Those details belong to this Skill's estimation process.
+
+The downstream scheduling contract is intentionally small: assignment identity, deadline, and estimated time. The estimate is the result of this Skill's Canvas analysis.
+
 If Google Tasks stores only a date and not a time, use the Canvas due date and put the due time in the notes.
 
 ### Find an existing task
@@ -180,6 +191,8 @@ Do not:
 - edit or delete Google Tasks that are not managed tasks
 - do graded work for the student
 - send assignment details anywhere except Canvas, Google, and the student
+- expose points, grade weight, rubric contents, assignment instructions, submission type, or linked course material as downstream scheduling features
+- require a downstream scheduling Skill to read Canvas or reproduce this Skill's estimation reasoning
 
 ## Replies
 
